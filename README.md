@@ -3,6 +3,7 @@
 # leaf-level_coordination_principles_propagate_to_the_ecosystem_scale
 Code to reproduce the analysis described in the manuscript "Leaf-level coordination principles propagate to the ecosystem scale" by Gomarasca et al., submitted at Nature Communications.
 
-The dataset used for the analyses can be found in the 'data' folder.
+The 'Source data.csv' file contains the dataset used for the analyses.
 
-The codes are explained and can be run via the 'analysis_code' R markdown, or they can be directly visualized in the 'scripts' folder.
+The codes are explained and can be run via the 'analysis_code' R markdown,
+or they can be directly visualized in the 'scripts' folder.
