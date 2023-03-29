@@ -48,7 +48,7 @@ source("scripts/themes/theme_mylarge.R")    # theme for plots
 
 ### Import data ----------------------------------------------------------------
 # Processed dataset
-dat <- read.table("data/input_data.csv", header = T, sep = ",")
+df <- read.table("Source data.csv", header = T, sep = ",")
 
 
 

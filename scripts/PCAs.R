@@ -31,7 +31,7 @@ PCAs = function(figs = c(1:3), boots = 499) {
   
   
   ### Import data ----------------------------------------------------------------
-  df <- read.table("data/input_data.csv", header = T, sep = ",")
+  df <- read.table("Source data.csv", header = T, sep = ",")
   
   
   

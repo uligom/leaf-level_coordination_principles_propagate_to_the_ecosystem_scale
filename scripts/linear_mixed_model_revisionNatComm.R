@@ -27,7 +27,7 @@ invisible(lapply(packages, library, character.only = TRUE))
 
 
 ### Data -----------------------------------------------------------------------
-dat <- read_csv(glue::glue("data/input_data.csv"), show_col_types = F)
+dat <- read.table("Source data.csv", header = T, sep = ",")
 
 
 

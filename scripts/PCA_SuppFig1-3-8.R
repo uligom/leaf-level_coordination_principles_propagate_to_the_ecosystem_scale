@@ -33,7 +33,7 @@ source("scripts/units.R")  # plot labels with variable names and units
 
 
 ### Import data ----------------------------------------------------------------
-df <- read.table("data/input_data.csv", header = T, sep = ",")
+df <- read.table("Source data.csv", header = T, sep = ",")
 
 
 
