@@ -13,9 +13,11 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Description
 
 This R Markdown document guides you through the code used for the analysis in the
-manuscript titled: Leaf-level coordination principles propagate to the ecosystem scale".
+manuscript titled: "Leaf-level coordination principles propagate to the ecosystem scale"
+by Gomarasca et al., submitted at Nature Communications.
 
-For the analysis, we used R 4.1.0, and RStudio 2022.12.0 Build 353.
+For the analysis, we used R version 4.1.0 (2021-05-18) "Camp Pontanezen", and
+RStudio 2022.12.0+353 "Elsbeth Geranium" Release (7d165dcfc1b6d300eb247738db2c7076234f6ef0, 2022-12-03) for Windows.
 The main packages used are described in the Methods section of the manuscript.
 
 
@@ -23,9 +25,18 @@ The main packages used are described in the Methods section of the manuscript.
 
 ## Manuscript analysis and figures
 
-Here, we run the code used to generate the principal component analysis output
-and plots for Figures 1, 2, and 3.
-Supplementary Table 7 is also 
+Here, we run the code used to generate the principal component analysis output 
+(PCA_stats_Figure_x) and plots for Figures 1, 2, and 3. The input data subsets
+to the PCAs are also generated.
+Supplementary Tables 2, 3, and 4 are compiled from a combination of the output
+statistics in this chunk and the subsequent chunks.
+Additionally, here we generate a list of the sites used for all the analyses, and
+Supplementary Table 7 with the relative number of sites for each IGBP vegetation
+class in each analysis.
+
+The running time for the code can take a few hours with the full 499 bootstrapping
+iterations.
+All the output files can be found in the "results" folder of this R project.
 
 ```{r}
 rm(list = ls(all = TRUE)) # clear environment
@@ -34,9 +45,7 @@ source("scripts/PCAs.R") # function to run the analyses
 
 print("Running PCA analysis to reproduce results of the manuscript titled: 'Leaf-level coordination principles propagate to the ecosystem scale'. This can take a few hours.")
 
-savedata <- as.logical(readline(prompt = "Save the output of the PCA for Figures 1, 2, 3? T/F:")) # ask if output should be saved
-
-PCAs(figs = 1:3) # 1 for Figure 1; 2 for Figure 2; 3 for Figure 3
+PCAs(figs = 1:3, boots = 499) # 1 for Figure 1; 2 for Figure 2; 3 for Figure 3. Lower the 'boots' argument to run the analysis faster (but consider that the results will not match the ones in the manuscript if you do).
 ```
 
 
@@ -46,12 +55,13 @@ Here, we run the principal component analysis again with i) all sites, ii) fores
 sites, and iii) evergreen needle-leaf forest sites, and plot the output into
 Supplementary Figures 1, 3, and 8.
 
+We generate the same output and input data table structure as for the main figures,
+which can be found in the 'results' folder.
+
 ```{r}
 rm(list = ls(all = TRUE)) # clear environment
 
 print("Running PCA analysis to reproduce Supplementary Figures 1, 3, and 8 in the Supplementary information for the manuscript titled: 'Leaf-level coordination principles propagate to the ecosystem scale'. This can take a few hours.")
-
-savedata <- as.logical(readline(prompt = "Save the output of the PCA for Supplementary Figures 1, 3, 8? T/F:")) # ask if output should be saved
 
 source("scripts/PCA_SuppFig1-3-8.R")
 ```
@@ -62,6 +72,8 @@ source("scripts/PCA_SuppFig1-3-8.R")
 Here, we run the principal component analysis for the Least-Cost Hypothesis at
 the ecosystem scale with different variables, and plot the output into
 Supplementary Figures 4 to 7.
+We generate the same output and input data table structure as for the main figures,
+which can be found in the 'results' folder.
 
 ```{r}
 rm(list = ls(all = TRUE)) # clear environment
@@ -70,9 +82,7 @@ source("scripts/PCAs.R") # function to run the analyses
 
 print("Running PCA analysis to reproduce Supplementary Figures 4, 5, 6, and 7 in the Supplementary information for the manuscript titled: 'Leaf-level coordination principles propagate to the ecosystem scale'. This can take a few hours.")
 
-savedata <- as.logical(readline(prompt = "Save the output of the PCA for Supplementary Figures 4, 5, 6, 7? T/F:")) # ask if output should be saved
-
-PCAs(figs = 31:34) # 31:34 for Supplementary Figures 4-7; 11:12 for additional analyses related to the leaf economics spectrum at the ecosystem scale (not included)
+PCAs(figs = 4:7, boots = 499) # 31:34 for Supplementary Figures 4-7; 11:12 for additional analyses related to the leaf economics spectrum at the ecosystem scale (not included)
 ```
 
 
@@ -86,8 +96,6 @@ rm(list = ls(all = TRUE)) # clear environment
 
 print("Running multimodel inference and relative importance analysis to reproduce Supplementary Figures 2 in the Supplementary information for the manuscript titled: 'Leaf-level coordination principles propagate to the ecosystem scale'")
 
-savedata <- as.logical(readline(prompt = "Save the output of the PCA for Supplementary Figure 2? T/F:")) # ask if output should be saved
-
 source("scripts/multimodel_inference_SuppFig2.R")
 ```
 
@@ -99,8 +107,6 @@ purposes.
 
 ```{r}
 rm(list = ls(all = TRUE)) # clear environment
-
-savedata <- as.logical(readline(prompt = "Save output for linear mixed models? T/F:")) # ask if output should be saved
 
 source("scripts/linear_mixed_model_revisionNatComm.R")
 ```

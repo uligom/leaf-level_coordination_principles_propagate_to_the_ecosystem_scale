@@ -3,6 +3,8 @@
 ### Author: Ulisse Gomarasca
 ### Script options -------------------------------------------------------------
 # Saving settings
+savedata <- T # save output
+
 if (savedata) {
   eval_file <- glue::glue("results/evaluation_linear_mixed_models.txt")
   txt <- "Linear mixed model analysis:"; print(txt); if (savedata) {cat(paste0(txt, "\n"), file = eval_file, append = F)}

@@ -9,6 +9,8 @@
 library(tictoc)
 tic()
 
+savedata <- T # save output
+
 
 
 ### Utilities ------------------------------------------------------------------
@@ -243,10 +245,10 @@ for (qq in 1:3) {
     ## Contributions and loadings ----
     pca_stats <- pca_stats %>% 
       group_by(PC, var) %>% 
-      summarize(contrib_mean = mean(contrib),
+      summarize(# contrib_mean = mean(contrib),
                 contrib_std = sd(contrib),
                 # contrib_q25 = quantile(contrib, 0.25), contrib_q75 = quantile(contrib, 0.75),
-                loading_mean = mean(loading),
+                # loading_mean = mean(loading),
                 loading_std = sd(loading),
                 # loading_q25 = quantile(loading, 0.25), loading_q75 = quantile(loading, 0.75),
                 .groups = "drop"
@@ -261,7 +263,7 @@ for (qq in 1:3) {
     ## Explained variance ----
     R2 <- R2 %>% 
       group_by(PC) %>% 
-      summarize(R2_mean = mean(exp_var),
+      summarize(# R2_mean = mean(exp_var),
                 R2_std = sd(exp_var),
                 # R2_q25 = quantile(exp_var, 0.25), R2_q75 = quantile(exp_var, 0.75),
                 .groups = "drop"
@@ -309,21 +311,16 @@ for (qq in 1:3) {
     pca_stats <- pca_stats %>% 
       dplyr::mutate(PC = as.integer(PC)) %>% 
       dplyr::relocate(PC_name, .after = PC) %>% 
-      dplyr::relocate(R2, .before = R2_mean) %>% 
-      dplyr::relocate(contrib, .before = contrib_mean) %>% 
-      dplyr::relocate(loading, .before = loading_mean) %>% 
+      dplyr::relocate(R2, .before = R2_std) %>% 
+      dplyr::relocate(contrib, .before = contrib_std) %>% 
+      dplyr::relocate(loading, .before = loading_std) %>% 
       dplyr::arrange(PC)
     
     
     
     ### Plot -------------------------------------------------------------------
     ## Plotting settings
-    # Color palettes:
-    gold_gray <- c("#E69F00", "#999999") # original from Mirco
-    orange_teal <- c("#DC421E", "#20CAC1") # colorblind-friendly with some contrast in grayscale
-    red_cyan <- c("#A00000", "#00A0A0") # more contrast
-    gray_scale <- c("#000000", "#B3B3B3") # grayscale max contrast
-    
+    # Color palette:
     CatCol <- c(
       CSH = "#586158", DBF = "#C46B39", EBF = "#4DD8C0", ENF = "#3885AB", GRA = "#9C4DC4",
       MF = "#C4AA4D", OSH = "#443396", SAV = "#CC99CC", WET = "#88C44D", WSA = "#AB3232"

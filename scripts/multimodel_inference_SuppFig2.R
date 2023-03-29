@@ -12,6 +12,8 @@ tic()
 
 
 ## Saving
+savedata <- T # save output
+
 if (savedata == TRUE) {
   save_path <- "results"
 } else if (savedata == FALSE) {

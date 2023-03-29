@@ -1,4 +1,4 @@
-PCAs = function(figs = c(1:3)) {
+PCAs = function(figs = c(1:3), boots = 499) {
   #### PRINCIPAL COMPONENT ANALYSIS
   
   ### Author: Ulisse Gomarasca, Mirco Migliavacca, Talie Musavi
@@ -6,6 +6,8 @@ PCAs = function(figs = c(1:3)) {
   # Measure script run time
   library(tictoc)
   tic()
+  
+  savedata <- T # save output
   
   
   
@@ -35,7 +37,7 @@ PCAs = function(figs = c(1:3)) {
   
   ### Analysis options -----------------------------------------------------------
   ## Set number of runs (bootstrapping)
-  tt <- 499 # number of repetitions for Dray test and error bars. WARNING: time consuming
+  tt <- boots # number of repetitions for Dray test and error bars. WARNING: time consuming
   
   
   
@@ -148,8 +150,8 @@ PCAs = function(figs = c(1:3)) {
     }
     
     
-    ## 31) LEAST COST HYPOTHESIS - PNUEarea variant ####
-    if (qq == 31){
+    ## 4) LEAST COST HYPOTHESIS - PNUEarea variant ####
+    if (qq == 4){
       ### Variant name (defines other options) ----
       variant <- "PNUEarea"
       
@@ -171,8 +173,8 @@ PCAs = function(figs = c(1:3)) {
     
     
     
-    ## 32) LEAST COST HYPOTHESIS - APAR_N variant ####
-    if (qq == 32){
+    ## 5) LEAST COST HYPOTHESIS - APAR_N variant ####
+    if (qq == 5){
       ### Variant name (defines other options) ----
       variant <- "APAR_N"
       
@@ -194,8 +196,8 @@ PCAs = function(figs = c(1:3)) {
     
     
     
-    ## 33) LEAST COST HYPOTHESIS - WUEet variant ####
-    if (qq == 33){
+    ## 6) LEAST COST HYPOTHESIS - WUEet variant ####
+    if (qq == 6){
       ### Variant name (defines other options) ----
       variant <- "WUEet"
       
@@ -217,8 +219,8 @@ PCAs = function(figs = c(1:3)) {
     }
     
     
-    ## 34) LEAST COST HYPOTHESIS - uWUE variant ####
-    if (qq == 34){
+    ## 7) LEAST COST HYPOTHESIS - uWUE variant ####
+    if (qq == 7){
       ### Variant name (defines other options) ----
       variant <- "uWUE"
       
@@ -345,10 +347,10 @@ PCAs = function(figs = c(1:3)) {
     ## Contributions and loadings ----
     pca_stats <- pca_stats %>% 
       group_by(PC, var) %>% 
-      summarize(contrib_mean = mean(contrib),
+      summarize(#contrib_mean = mean(contrib),
                 contrib_std = sd(contrib),
                 # contrib_q25 = quantile(contrib, 0.25), contrib_q75 = quantile(contrib, 0.75),
-                loading_mean = mean(loading),
+                # loading_mean = mean(loading),
                 loading_std = sd(loading),
                 # loading_q25 = quantile(loading, 0.25), loading_q75 = quantile(loading, 0.75),
                 .groups = "drop"
@@ -363,7 +365,7 @@ PCAs = function(figs = c(1:3)) {
     ## Explained variance ----
     R2 <- R2 %>% 
       group_by(PC) %>% 
-      summarize(R2_mean = mean(exp_var),
+      summarize(#R2_mean = mean(exp_var),
                 R2_std = sd(exp_var),
                 # R2_q25 = quantile(exp_var, 0.25), R2_q75 = quantile(exp_var, 0.75),
                 .groups = "drop"
@@ -411,21 +413,16 @@ PCAs = function(figs = c(1:3)) {
     pca_stats <- pca_stats %>% 
       dplyr::mutate(PC = as.integer(PC)) %>% 
       dplyr::relocate(PC_name, .after = PC) %>% 
-      dplyr::relocate(R2, .before = R2_mean) %>% 
-      dplyr::relocate(contrib, .before = contrib_mean) %>% 
-      dplyr::relocate(loading, .before = loading_mean) %>% 
+      dplyr::relocate(R2, .before = R2_std) %>% 
+      dplyr::relocate(contrib, .before = contrib_std) %>% 
+      dplyr::relocate(loading, .before = loading_std) %>% 
       dplyr::arrange(PC)
     
     
     
     ### Plot ---------------------------------------------------------------------
     ## Plotting settings
-    # Color palettes:
-    gold_gray <- c("#E69F00", "#999999") # original from Mirco
-    orange_teal <- c("#DC421E", "#20CAC1") # colorblind-friendly with some contrast in grayscale
-    red_cyan <- c("#A00000", "#00A0A0") # more contrast
-    gray_scale <- c("#000000", "#B3B3B3") # grayscale max contrast
-    
+    # Color palette:
     CatCol <- c(
       CSH = "#586158", DBF = "#C46B39", EBF = "#4DD8C0", ENF = "#3885AB", GRA = "#9C4DC4",
       MF = "#C4AA4D", OSH = "#443396", SAV = "#CC99CC", WET = "#88C44D", WSA = "#AB3232"
@@ -620,29 +617,35 @@ PCAs = function(figs = c(1:3)) {
   
   
   ### Save site list -------------------------------------------------------------
-  if (savedata == T){
+  if (savedata == T ) {
     # Save list of used sites
     write.table(site_list %>% dplyr::select(SITE_ID) %>% unique(), file = glue::glue("results/site_list.csv"), row.names = F, sep = ";")
     
-    # Save IGBP stats
-    site_igbp <- site_list %>%
-      dplyr::filter(analysis %in% c("Figure_1", "Figure_2", "Figure_3")) %>%
-      dplyr::left_join(df %>% select(SITE_ID, IGBP)) %>%
-      dplyr::group_by(analysis) %>%
-      dplyr::mutate(n_sites = n()) %>%
-      dplyr::group_by(IGBP, analysis) %>%
-      dplyr::summarise(site_fraction = n() * 100 / n_sites) %>%
-      unique() %>%
-      dplyr::mutate(analysis = case_when(
-        analysis == "Figure_1" ~ "Leaf economics spectrum",
-        analysis == "Figure_2" ~ "Global spectrum of plant form and function",
-        analysis == "Figure_3" ~ "Least cost hypothesis"
-      )
-      ) %>%
-      dplyr::arrange(IGBP, analysis) %>%
-      tidyr::pivot_wider(names_from = analysis, values_from = site_fraction)
-    
-    write_csv(site_igbp, file = "results/Table_S7.csv")
+    if (figs %in% c(1:3)) {
+      # Save IGBP stats
+      site_igbp <- site_list %>%
+        dplyr::filter(analysis %in% c("Figure_1", "Figure_2", "Figure_3")) %>%
+        dplyr::left_join(df %>% select(SITE_ID, IGBP)) %>%
+        dplyr::group_by(analysis) %>%
+        dplyr::mutate(n_sites = n()) %>%
+        dplyr::group_by(IGBP, analysis) %>%
+        dplyr::summarise(site_fraction = n() * 100 / n_sites) %>%
+        unique() %>%
+        dplyr::mutate(analysis = case_when(
+          analysis == "Figure_1" ~ "Leaf economics spectrum",
+          analysis == "Figure_2" ~ "Global spectrum of plant form and function",
+          analysis == "Figure_3" ~ "Least cost hypothesis"
+          # analysis == "Supplementary_Figure_4" ~ "Least cost hypothesis - Supplementary Figure 4",
+          # analysis == "Supplementary_Figure_5" ~ "Least cost hypothesis - Supplementary Figure 5",
+          # analysis == "Supplementary_Figure_6" ~ "Least cost hypothesis - Supplementary Figure 6",
+          # analysis == "Supplementary_Figure_7" ~ "Least cost hypothesis - Supplementary Figure 7"
+        )
+        ) %>%
+        dplyr::arrange(IGBP, analysis) %>%
+        tidyr::pivot_wider(names_from = analysis, values_from = site_fraction)
+      
+      write_csv(site_igbp, file = "results/Table_S7.csv")
+    }
   }
   ### End ------------------------------------------------------------------------
   toc()
