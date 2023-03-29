@@ -1,7 +1,7 @@
 [![DOI](https://zenodo.org/badge/613932595.svg)](https://zenodo.org/badge/latestdoi/613932595)
 
 # leaf-level_coordination_principles_propagate_to_the_ecosystem_scale
-Code to reproduce the analysis described in the manuscript "leaf-level coordination principles propagate to the ecosystem scale" by Gomarasca et al., submitted at Nature Communications.
+Code to reproduce the analysis described in the manuscript "Leaf-level coordination principles propagate to the ecosystem scale" by Gomarasca et al., submitted at Nature Communications.
 
 The dataset used for the analyses can be found in the 'data' folder.
 
